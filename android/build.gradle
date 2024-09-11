@@ -101,6 +101,10 @@ dependencies {
 
   implementation "com.google.mlkit:object-detection:17.0.1"
 
+  // https://developers.google.com/ml-kit/vision/pose-detection/android
+
+  implementation "com.google.mlkit:pose-detection:18.0.0-beta5"
+
   // https://developers.google.com/ml-kit/vision/image-labeling/android
 
   implementation "com.google.mlkit:image-labeling:17.0.8"

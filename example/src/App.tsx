@@ -39,6 +39,10 @@ export default function App() {
     enableClassification: true,
   });
 
+  // @ts-ignore
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { poseDetector } = plugins.usePoseDetector({});
+
   const { hasPermission, requestPermission } = useCameraPermission();
 
   const device = useCameraDevice('back');
@@ -62,6 +66,9 @@ export default function App() {
 
       const objects = objectDetector(frame);
       console.log(objects);
+
+      // const poses = poseDetector(frame);
+      // console.log(poses);
     });
   }, []);
 

@@ -332,6 +332,41 @@ export type Text = {
 };
 
 /**
+ * Represents a detected pose point.
+ */
+export type Pose = {
+  type: number;
+  x: number;
+  y: number;
+  z: number;
+};
+
+export type PoseDetectorPluginOptions = CommonPluginOptions & {};
+
+/**
+ * Plugin for detecting poses in a frame.
+ */
+export type PoseDetectorPlugin = {
+  /**
+   * Detect poses in a given frame.
+   *
+   * @param frame - The frame processor {@link Frame}.
+   * @returns An array containing the detected pose {@link Pose} data.
+   *
+   * @example
+   * ```ts
+   * const poseDetector = usePoseDetector();
+   * const frameProcessor = useFrameProcessor((frame) => {
+   *   'worklet';
+   *   const poses = poseDetector(frame);
+   *   console.log(poses);
+   * }, []);
+   * ```
+   */
+  poseDetector: (frame: Frame) => Pose[];
+};
+
+/**
  * Options for configuring the object detection plugin.
  */
 export type ObjectDetectorPluginOptions = CommonPluginOptions & {

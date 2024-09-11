@@ -8,6 +8,7 @@ import com.mrousavy.camera.frameprocessors.FrameProcessorPluginRegistry
 import com.visioncameramlkit.plugins.VisionCameraMLkitBarcodeScanningPlugin
 import com.visioncameramlkit.plugins.VisionCameraMLkitImageLabelingPlugin
 import com.visioncameramlkit.plugins.VisionCameraMLkitObjectDetectionPlugin
+import com.visioncameramlkit.plugins.VisionCameraMLkitPoseDetectionPlugin
 import com.visioncameramlkit.plugins.VisionCameraMLkitTextRecognitionPlugin
 
 class VisionCameraMLkitPackage : ReactPackage {
@@ -23,6 +24,10 @@ class VisionCameraMLkitPackage : ReactPackage {
 
             FrameProcessorPluginRegistry.addFrameProcessorPlugin("objectDetector") { proxy, options ->
                 VisionCameraMLkitObjectDetectionPlugin(proxy, options)
+            }
+
+            FrameProcessorPluginRegistry.addFrameProcessorPlugin("poseDetector") { proxy, options ->
+                VisionCameraMLkitPoseDetectionPlugin(proxy, options)
             }
 
             FrameProcessorPluginRegistry.addFrameProcessorPlugin("textRecognizer") { proxy, options ->
