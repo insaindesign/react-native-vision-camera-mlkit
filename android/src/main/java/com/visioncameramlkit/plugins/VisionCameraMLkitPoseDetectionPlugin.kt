@@ -18,6 +18,7 @@ import com.mrousavy.camera.frameprocessors.VisionCameraProxy
 import com.visioncameramlkit.utils.VisionCameraMLkitUtils.createBoundsMap
 import com.visioncameramlkit.utils.VisionCameraMLkitUtils.createInputImageFromFrame
 import com.visioncameramlkit.utils.VisionCameraMLkitUtils.createInvertedInputImageFromFrame
+import com.visioncameramlkit.utils.VisionCameraMLkitUtils.rotatePosition
 import java.util.ArrayList
 
 private const val TAG = "VisionCameraMLkitPoseDetectionPlugin"
@@ -65,7 +66,7 @@ class VisionCameraMLkitPoseDetectionPlugin(
             val task: Task<Pose> = this.poseDetector.process(inputImage)
 
             val detectedPoses: Pose = Tasks.await(task)
-            val array = createPosesArray(detectedPoses)
+            val array = createPosesArray(frame, detectedPoses)
 
             return array.toArrayList()
         } catch (e: FrameInvalidError) {
@@ -85,13 +86,15 @@ class VisionCameraMLkitPoseDetectionPlugin(
      * @param detectedPoses The list of detected poses.
      * @return A WritableNativeArray of detected poses.
      */
-    private fun createPosesArray(detectedPoses: Pose): WritableNativeArray {
+    private fun createPosesArray(frame: Frame, detectedPoses: Pose): WritableNativeArray {
         return WritableNativeArray().apply {
             detectedPoses.getAllPoseLandmarks().map { detectedPose ->
+                var rotatedPosition = rotatePosition(frame, detectedPose.getPosition())
                 WritableNativeMap().apply {
+                    putInt("timestamp", frame.timestamp.toInt())
                     putInt("type", detectedPose.getLandmarkType())
-                    putDouble("x", detectedPose.getPosition3D().getX().toDouble())
-                    putDouble("y", detectedPose.getPosition3D().getY().toDouble())
+                    putDouble("x", rotatedPosition.x.toDouble())
+                    putDouble("y", rotatedPosition.y.toDouble())
                     putDouble("z", detectedPose.getPosition3D().getZ().toDouble())
                 }
             }.forEach { pushMap(it) }

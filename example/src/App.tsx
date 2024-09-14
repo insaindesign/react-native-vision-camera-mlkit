@@ -64,6 +64,7 @@ export default function App() {
       // const labels = imageLabeler(frame);
       // console.log(labels);
 
+      // @ts-ignore
       const objects = objectDetector(frame);
       console.log(objects);
 

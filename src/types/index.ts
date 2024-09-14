@@ -335,6 +335,7 @@ export type Text = {
  * Represents a detected pose point.
  */
 export type Pose = {
+  timestamp: number;
   type: number;
   x: number;
   y: number;
