@@ -1,5 +1,5 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { AppState, StyleSheet, View } from 'react-native';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { AppState, Button, StyleSheet, View } from 'react-native';
 import {
   Camera,
   Templates,
@@ -23,6 +23,13 @@ linePaint.setColor(Skia.Color('lime'));
 
 export default function App() {
   const [targetFps] = useState(16);
+  const [cameraPosition, setCameraPosition] = useState<'front' | 'back'>('back')
+
+  const onFlipCameraPressed = useCallback(() => {
+    setCameraPosition((p) => (p === 'back' ? 'front' : 'back'))
+  }, [])
+
+  const device = useCameraDevice(cameraPosition)
   const [isForeground, setIsForeground] = useState(
     AppState.currentState === 'active'
   );
@@ -34,7 +41,6 @@ export default function App() {
 
   const { hasPermission, requestPermission } = useCameraPermission();
 
-  const device = useCameraDevice('back');
   const format = useCameraFormat(device, Templates.FrameProcessing);
 
   const fps = Math.min(format?.maxFps ?? 1, targetFps);
@@ -93,6 +99,9 @@ export default function App() {
         style={StyleSheet.absoluteFill}
         onError={console.error}
       />
+      <View style={styles.buttons}>
+        <Button onPress={onFlipCameraPressed} title="Flip Camera" />
+      </View>
     </View>
   );
 }
@@ -101,9 +110,12 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: 'flex-end',
+    justifyContent: 'flex-end',
   },
+  buttons: {
+    margin: 12
+  }
 });
 
 const lines: [number, number][] = [
