@@ -4,19 +4,16 @@ import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.ColorMatrix
 import android.graphics.ColorMatrixColorFilter
-import android.graphics.Matrix
 import android.graphics.Paint
 import android.graphics.Point
 import android.graphics.Rect
 import android.graphics.PointF
 import android.media.Image
-import android.util.Log
 import com.facebook.react.bridge.WritableNativeArray
 import com.facebook.react.bridge.WritableNativeMap
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.common.internal.ImageConvertUtils
 import com.mrousavy.camera.frameprocessors.Frame
-import androidx.core.graphics.values
 
 object VisionCameraMLkitUtils {
     fun createInputImageFromFrame(frame: Frame): InputImage {
@@ -105,11 +102,21 @@ object VisionCameraMLkitUtils {
         }
     }
 
-    /** 
-     * Frame is always in landscape left (270), rotate back to Portrait (0)
-    */
+    /** Rotate coordinates back to Portrait, if they are landscape */
     fun rotatePosition(frame: Frame, position: PointF): PointF {
-        var centerY = frame.height.toFloat() / 2;
-        return PointF(position.y, centerY - position.x + centerY)
+        var orientation = frame.orientation.toString()
+        var centerX = frame.height.toFloat() / 2
+        var centerY = frame.width.toFloat() / 2
+        if (orientation === "LANDSCAPE_RIGHT") {
+            return PointF(position.y, centerX - position.x + centerX)
+        }
+        if (orientation === "LANDSCAPE_LEFT") {
+            return PointF(centerY - position.y + centerY, position.x)
+        }
+        // This is just a guess that you need to flip on all coords
+        if (orientation === "PORTRAIT_UPSIDE_DOWN") {
+            return PointF(centerX - position.x + centerX, centerY - position.y + centerY)
+        }
+        return position
     }
 }
